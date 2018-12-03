@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 type GitLog struct {
@@ -18,12 +21,28 @@ type GitLog struct {
 	Message string
 }
 
+const (
+	ServicePort = ":5000"
+	apiVersion  = "/api/v1"
+)
+
 var datas []GitLog
 var gitfile string
 var logfile string
 
+func handleRequests() {
+	r := mux.NewRouter()
+	myRouter := r.PathPrefix(apiVersion).Subrouter()
+	myRouter.Path("/log").HandlerFunc(jsonToweb)
+	fmt.Println("Start..")
+	log.Fatal(http.ListenAndServe(ServicePort, myRouter))
+}
+
+func jsonToweb(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(datas)
+}
+
 func getGitLog() {
-	// WRITE to file
 	cmd := exec.Command("git", "--git-dir", gitfile, "log")
 	outfile, err := os.Create(logfile)
 	if err != nil {
@@ -146,9 +165,10 @@ func main() {
 		logfile = "/tmp/gitlog.log"
 		getGitLog()
 	} else {
-		// logfile = "../logSMALL.log"
-		logfile = "../logHUGE.log"
+		// logfile = "logSMALL.log"
+		logfile = "logHUGE.log"
 	}
 	readFile()
 	getFinalJson()
+	handleRequests()
 }
