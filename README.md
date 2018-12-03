@@ -4,23 +4,25 @@ Written in golang is [here](./go/go_parse.go).
 Written in python is [here](./py/py_parse.py). TODO
 
 #### RUN
-There are two ways to run it:
-**1. 'git log' already added to some local file for example 'logHUGE.log'**
+There are two ways to run it:  
+
+**`git log output` was added earlier local file `./gitlog.log*`**:
 ```sh
 $ go run go/go_parse.go
-go run go/go_parse.go | jq
 ```
+\* `gitlog.log` by default is hardcoded in go script
 
-**2. point to .git in specific location as a first parameter**
+**provide full path to the directory where `.git` is located as a first parameter**:
 ```sh
-$ go run go/go_parse.go /<full_path>/.git
-go run go/go_parse.go /<full_path>/.git | jq
+$ go run go/go_parse.go <full_path>
+# for example
+go run go/go_parse.go /tmp/myrepo
 ```
 
 #### OUTPUT
-After script successfully run it displays json to stdout and runs simple webui with log contents.
+After script successfully run it will display json to stdout and run simple webui with git log content.
 ```sh
-$ curl http://localhost:5000/api/v1/log
+$ curl http://localhost:5000/api/v1/log | jq
 ```
 
 TODO:

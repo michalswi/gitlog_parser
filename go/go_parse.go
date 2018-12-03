@@ -27,7 +27,7 @@ const (
 )
 
 var datas []GitLog
-var gitfile string
+var gitdir string
 var logfile string
 
 func handleRequests() {
@@ -43,7 +43,7 @@ func jsonToweb(w http.ResponseWriter, r *http.Request) {
 }
 
 func getGitLog() {
-	cmd := exec.Command("git", "--git-dir", gitfile, "log")
+	cmd := exec.Command("git", "--git-dir", gitdir+"/.git", "log")
 	outfile, err := os.Create(logfile)
 	if err != nil {
 		panic(err)
@@ -161,12 +161,12 @@ func getFinalJson() {
 
 func main() {
 	if len(os.Args) > 1 {
-		gitfile = os.Args[1]
+		gitdir = os.Args[1]
 		logfile = "/tmp/gitlog.log"
 		getGitLog()
 	} else {
 		// logfile = "logSMALL.log"
-		logfile = "logHUGE.log"
+		logfile = "gitlog.log"
 	}
 	readFile()
 	getFinalJson()
