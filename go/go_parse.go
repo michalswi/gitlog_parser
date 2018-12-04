@@ -27,6 +27,7 @@ const (
 )
 
 var datas []GitLog
+var finalJson = make(map[string]interface{})
 var gitdir string
 var logfile string
 
@@ -39,7 +40,8 @@ func handleRequests() {
 }
 
 func jsonToweb(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(datas)
+	// json.NewEncoder(w).Encode(datas)
+	json.NewEncoder(w).Encode(finalJson)
 }
 
 func getGitLog() {
@@ -71,11 +73,9 @@ func readFile() {
 	var mergeFlag bool
 
 	for scanner.Scan() {
-		// fmt.Println(scanner.Text())
 		line := scanner.Text()
 		if line != "" {
 			s := strings.Split(line, " ")
-			// fmt.Println(s)
 
 			var tmpCommit string
 			var tmpMerge string
@@ -108,9 +108,6 @@ func readFile() {
 				tmpLst = append(tmpLst, strings.TrimSpace(tmpMessage))
 				commitFlag = false
 			}
-
-			// fmt.Println(tmpLst)
-			// fmt.Println(len(tmpLst))
 
 			switch {
 			case mergeFlag == true && len(tmpLst) == 5:
@@ -149,14 +146,14 @@ func setDataNoMerge(input []string) {
 }
 
 func getFinalJson() {
-	// todo: anonymous struct
-	// data [{},{}]
-	js, err := json.Marshal(datas)
+	finalJson["status"] = "completed"
+	finalJson["error"] = "null"
+	finalJson["data"] = datas
+	js, err := json.MarshalIndent(finalJson, "", "  ")
 	if err != nil {
-		fmt.Println("error:", err)
+		log.Fatalln(err)
 	}
-	getjson := fmt.Sprintf("%s", js)
-	fmt.Println(getjson)
+	fmt.Println(string(js))
 }
 
 func main() {
