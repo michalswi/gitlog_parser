@@ -6,7 +6,7 @@ Written in python is [here](./py/py_parse.py). TODO
 #### RUN
 There are two ways to run it:  
 
-**`git log output` was added earlier local file `./gitlog.log*`**:
+**git log output was added earlier to local file `./gitlog.log*`**:
 ```sh
 $ go run go/go_parse.go
 ```

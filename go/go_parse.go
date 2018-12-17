@@ -149,6 +149,8 @@ func getFinalJson() {
 	finalJson["status"] = "completed"
 	finalJson["error"] = "null"
 	finalJson["data"] = datas
+
+	// display json in terminal
 	js, err := json.MarshalIndent(finalJson, "", "  ")
 	if err != nil {
 		log.Fatalln(err)
